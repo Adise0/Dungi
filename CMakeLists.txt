@@ -16,7 +16,7 @@ target_link_libraries(Dungi PRIVATE Crow::Crow)
 # -----------------------------
 
 # ---- Crow
-list(PREPEND CMAKE_PREFIX_PATH "/mnt/storage/Downloads/SDKs")
+list(PREPEND CMAKE_PREFIX_PATH "/mnt/storage/Download/SDKs")
 find_package(Crow REQUIRED)
 
 
