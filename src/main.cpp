@@ -1,4 +1,7 @@
-#include <iostream>
+#include "Scenes/MainMenu/MainMenu.h"
+#include <Crow.h>
 
-
-int main() { std::cout << "Hello World!" << std::endl; }
+int main() {
+  Dungi::MainMenu *mainMenu = new Dungi::MainMenu();
+  Crow::Run(mainMenu);
+}
