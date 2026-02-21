@@ -4,7 +4,7 @@
   "description": "Start building C++ apps!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "style": "sass styles:assets/ui"
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Adise0/Dungi/issues"
   },
-  "homepage": "https://github.com/Adise0/Dungi#readme"
+  "homepage": "https://github.com/Adise0/Dungi#readme",
+  "devDependencies": {
+    "sass": "^1.97.3"
+  }
 }
