@@ -6,9 +6,8 @@ void MainMenu::Load() {
   GameObject &cameraGO = GetRoot().CreateChild("Camera");
   Camera &cam = cameraGO.AddComponent<Camera>();
   cam.SetAsActiveCamera();
+  cameraGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
 
-  GameObject &uiHolder = GetRoot().CreateChild("Ui Holder");
-  uiHolder.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
   // #endregion
 }
 } // namespace Dungi

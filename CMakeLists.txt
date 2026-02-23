@@ -16,19 +16,34 @@ target_link_libraries(Dungi PRIVATE Crow::Crow)
 # -----------------------------
 
 # ---- Crow
-list(PREPEND CMAKE_PREFIX_PATH "/mnt/storage/Download/SDKs")
 find_package(Crow REQUIRED)
 
 
+file(GLOB RESOURCE_FILES "${Crow_ASSETS_DIR}/*")
+
 add_custom_command(TARGET Dungi POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${Crow_RESOURCES_DIR}"
-    "$<TARGET_FILE_DIR:Dungi>/resources"
+  COMMAND ${CMAKE_COMMAND} -E make_directory
+          "$<TARGET_FILE_DIR:Dungi>/resources"
 )
+
+foreach(file ${RESOURCE_FILES})
+  get_filename_component(name ${file} NAME)
+
+  add_custom_command(TARGET Dungi POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${file}"
+            "$<TARGET_FILE_DIR:Dungi>/resources/${name}"
+  )
+endforeach()
 
 add_custom_command(TARGET Dungi POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${Crow_INSPECTOR_DIR}"
+    "${Crow_ULTRALIGHT_INSPECTOR_DIR}"
     "$<TARGET_FILE_DIR:Dungi>/inspector"
 )
 
+add_custom_command(TARGET Dungi POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${Crow_ULTRALIGHT_RESOURCES_DIR}"
+    "$<TARGET_FILE_DIR:Dungi>/resources"
+)

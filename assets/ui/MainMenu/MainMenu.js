@@ -1,11 +1,11 @@
 const Quit = () => {
-  console.log("Quit");
+  Log("Quit");
 };
 
 const NewDungeon = () => {
-  console.log("NewDungeon");
+  Log("NewDungeon");
 };
 
 const LoadDungeon = () => {
-  console.log("LoadDungeon");
+  Log("LoadDungeon");
 };

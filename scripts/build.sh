@@ -7,7 +7,6 @@ appName=$2
 printf "[Build] Running pre-builld commands\n"
 
 printf "  [Pre-Build] Copying assets...\n"
-rm -rf ./${buildDir}/assets
 cp -r ./assets ./${buildDir}
 printf "  [Pre-Build] Assets copied\n\n"
 
