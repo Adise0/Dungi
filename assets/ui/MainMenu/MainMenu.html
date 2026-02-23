@@ -4,17 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script src="test.js" defer></script>
+    <script src="./MainMenu.js" defer></script>
     <link rel="stylesheet" href="MainMenu.css" />
     <link rel="stylesheet" href="../global.css" />
   </head>
   <body>
     <main>
       <div>
-        <button class="MenuButton">New Dungeon</button>
-        <button class="MenuButton">Load Dungeon</button>
-        <button class="MenuButton">Quit</button>
+        <button class="MenuButton" onclick="NewDungeon()">New Dungeon</button>
+        <button class="MenuButton" onclick="LoadDungeon()">Load Dungeon</button>
+        <button class="MenuButton" onclick="Quit()">Quit</button>
       </div>
+      <section id="MainTitle" class="MainTitle"><h1>DUNGI</h1></section>
     </main>
   </body>
 </html>

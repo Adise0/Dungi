@@ -1,9 +1,25 @@
+@font-face {
+  font-family: "Jersey 10";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/Jersey10.ttf") format("truetype");
+}
+
+* {
+  font-family: "Jersey 10";
+}
+
 button {
   background: none;
   border: none;
-}
 
-.MenuButton {
+  color: white;
+  font-size: 40px;
+
   &:hover {
+    cursor: pointer;
+    transform: translate(10px, 0);
+    color: yellow;
   }
 }
