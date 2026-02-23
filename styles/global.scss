@@ -1,3 +1,9 @@
 button {
   background: none;
+  border: none;
+}
+
+.MenuButton {
+  &:hover {
+  }
 }

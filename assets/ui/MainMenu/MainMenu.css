@@ -5,9 +5,15 @@ main {
   padding-left: 100px;
   display: flex;
   align-items: flex-end;
+}
+main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-image: url("./Background.jpg");
   background-position: 30% 60%;
   filter: brightness(0.2);
+  z-index: -1;
 }
 
 div {

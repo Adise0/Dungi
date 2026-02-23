@@ -7,9 +7,17 @@ main {
   display: flex;
   align-items: flex-end;
   // background-color: blue;
-  background-image: url("./Background.jpg");
-  background-position: 30% 60%;
-  filter: brightness(0.2);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image: url("./Background.jpg");
+    background-position: 30% 60%;
+    filter: brightness(0.2);
+    z-index: -1;
+  }
 }
 
 div {
@@ -17,5 +25,4 @@ div {
   flex-direction: column;
   gap: 20px;
   height: 40%;
-  // background-color: red;
 }
