@@ -8,7 +8,11 @@ printf "[Build] Running pre-builld commands\n"
 
 printf "  [Pre-Build] Copying assets...\n"
 cp -r ./assets ./${buildDir}
-printf "  [Pre-Build] Assets copied\n\n"
+printf "  [Pre-Build] Done\n\n"
+
+printf "  [Pre-Build] Creating dungeons folder...\n"
+mkdir -p ./Dungeons
+printf "  [Pre-Build] Done\n\n"
 
 printf "[Build] Pre-build commands complete\n"
 

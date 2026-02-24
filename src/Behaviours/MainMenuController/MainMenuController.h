@@ -17,10 +17,9 @@ private:
   // #region Methods
 public:
   void Awake() override;
-  void Update() override;
+  // void Update() override;
 
 private:
-  void CreateNewDungeon(std::string dugeonName);
   void Play(std::string dugeonName);
   // #endregion
 };

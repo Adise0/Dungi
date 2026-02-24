@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
+#define SIZE 20
 #define WALL "#"
 #define PLAYER "P"
 #define CHEST "C"
@@ -9,7 +11,13 @@
 
 namespace Dungi {
 class DungeonManager {
+  using DungeonMap = std::vector<std::vector<std::string>>;
+
+
 public:
-  void CreateNewDungeon(std::string dugeonName);
+  static void CreateNewDungeon(std::string dugeonName);
+
+private:
+  static void SaveToFile(std::string name, std::string map);
 };
 } // namespace Dungi
