@@ -172,20 +172,20 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
   Renderer &centerRenderer = center.AddComponent<Renderer>(SDL_Color{255, 255, 255, 255});
   centerRenderer.size = Vector2(0.1, 0.1);
 
+  const int height = 40;
+  const int extendedHeight = 80;
 
   GameObject &top = wall.CreateChild(name + "-Top");
-  top.transform.position += Vector2::Up * 0.5f;
+  top.transform.position += Vector2::Up * 0.25f;
   Renderer &topRenderer = top.AddComponent<Renderer>(wallsprite);
   top.transform.zIndex = 10;
 
 
-  SDL_FRect topSRect = {36, 203, 44 - 36, 243 - 203};
-  if (neighbours[0]) topSRect = {36, 206, 44 - 36, 243 - 206};
+  SDL_FRect topSRect = {36, 203, 44 - 36, height};
+  if (neighbours[0]) topSRect = {36, 206, 44 - 36, height};
   topRenderer.SetSRect(topSRect);
   topRenderer.size = Vector2(0.1f, 0.5f);
 
-  const int height = 40;
-  const int extendedHeight = 80;
 
 
   GameObject &down = wall.CreateChild(name + "-Down");
@@ -198,6 +198,7 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
   if (neighbours[1]) {
     downSRect = {36, 245, 44 - 36, height};
     downSize = Vector2(0.1f, 0.5f);
+    down.transform.position += Vector2::Down * 0.25f;
   } else {
     down.transform.position += Vector2::Down * 0.5f;
   }
