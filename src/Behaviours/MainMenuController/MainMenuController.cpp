@@ -11,11 +11,16 @@ void MainMenuController::Awake() {
     DungeonManager::CreateNewDungeon(message);
     Play();
   });
+  DungeonManager::CreateNewDungeon("Test");
+  Play();
 }
 
 
 
-void MainMenuController::Play() { DungeonManager::SpawnDungeon(); }
+void MainMenuController::Play() {
+  DungeonManager::SpawnDungeon();
+  printf("New Scene loaded!\n");
+}
 
 
 

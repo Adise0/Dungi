@@ -36,8 +36,8 @@ public:
 
 private:
   static void SaveToFile(std::string name, std::string map);
-
-  static GameObject &CreateWall(Vector2 pos);
+  static std::vector<bool> GetConnectedNeighbours(Vector2 pos, DungeonMap map);
+  static GameObject &CreateWall(Vector2 pos, std::vector<bool> neighbours);
   // GameObject &CreateChest(Vector2 pos);
   // GameObject &CreateEnemy(Vector2 pos);
   // GameObject &CreatePlayer(Vector2 pos);
