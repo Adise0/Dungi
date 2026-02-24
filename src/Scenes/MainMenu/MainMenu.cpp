@@ -1,5 +1,5 @@
 #include "MainMenu.h"
-
+#include "../../Behaviours/MainMenuController/MainMenuController.h"
 namespace Dungi {
 void MainMenu::Load() {
   // #region Load
@@ -7,6 +7,7 @@ void MainMenu::Load() {
   Camera &cam = cameraGO.AddComponent<Camera>();
   cam.SetAsActiveCamera();
   cameraGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
+  cameraGO.AddComponent<MainMenuController>();
 
   // #endregion
 }

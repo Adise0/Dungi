@@ -13,3 +13,10 @@ const NewDungeon = () => {
 const LoadDungeon = () => {
   window.location = "../LoadDungeon/LoadDungeon.html";
 };
+
+const Play = (event) => {
+  event.preventDefault();
+  const name = document.querySelector("#name").value;
+  if (!name) return;
+  Send("Play", name);
+};
