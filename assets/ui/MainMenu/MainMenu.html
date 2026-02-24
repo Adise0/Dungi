@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Main Menu</title>
     <script src="./MainMenu.js" defer></script>
     <script src="../../../resources/global.js" defer></script>
     <link rel="stylesheet" href="MainMenu.css" />
@@ -11,11 +11,15 @@
   </head>
   <body>
     <main>
-      <div>
-        <p id="console"></p>
-        <button class="MenuButton" onclick="NewDungeon()">New Dungeon</button>
-        <button class="MenuButton" onclick="LoadDungeon()">Load Dungeon</button>
-        <button class="MenuButton" onclick="Quit()">Quit</button>
+      <div class="Holder">
+        <div class="Menu">
+          <p id="console"></p>
+          <button class="MenuButton" onclick="NewDungeon()">New Dungeon</button>
+          <button class="MenuButton" onclick="LoadDungeon()">
+            Load Dungeon
+          </button>
+          <button class="MenuButton" onclick="Quit()">Quit</button>
+        </div>
       </div>
       <section id="MainTitle" class="MainTitle"><h1>DUNGI</h1></section>
     </main>

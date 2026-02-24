@@ -1,0 +1,38 @@
+.Holder {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+
+  gap: 60px;
+}
+
+label {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  gap: 15px;
+
+  p {
+    color: yellow;
+    font-size: 40px;
+    text-shadow: 2px -2px 0 red;
+    margin: 0;
+  }
+}
+
+input {
+  background: none;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid gray;
+
+  color: white;
+
+  font-size: 20px;
+
+  &:active,
+  &:focus {
+    border-bottom: 2px solid red;
+  }
+}

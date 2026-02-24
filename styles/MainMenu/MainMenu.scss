@@ -1,55 +1,14 @@
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-main {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  padding-bottom: 100px;
-  padding-left: 100px;
-
+.Holder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: flex-end;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background-image: url("./Background.jpg");
-    background-position: 30% 60%;
-    filter: brightness(0.15);
-    z-index: -1;
-  }
 }
 
-div {
+.Menu {
   display: flex;
   flex-direction: column;
   gap: 20px;
   height: 40%;
   align-items: flex-start;
-}
-
-#MainTitle {
-  position: absolute;
-
-  top: 50px;
-  right: 200px;
-
-  color: yellow;
-
-  h1 {
-    font-size: 160px;
-    text-shadow: 4px -4px 0 red;
-  }
-}
-
-.MenuButton {
-  &:hover {
-    text-shadow: 2px -2px 0 red;
-  }
 }
