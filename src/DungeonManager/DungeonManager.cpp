@@ -1,8 +1,10 @@
 #include "./DungeonManager.h"
+#include "../Scenes/Dungeon/Dungeon.h"
 #include <fstream>
 
-
 namespace Dungi {
+
+std::vector<std::vector<std::string>> DungeonManager::loadedMap;
 
 void DungeonManager::CreateNewDungeon(std::string dungeonName) {
   // #region CreateNewDungeon
@@ -63,7 +65,7 @@ void DungeonManager::CreateNewDungeon(std::string dungeonName) {
     }
   }
   printf("Done\n");
-
+  loadedMap = dungeonMap;
   std::string map = "";
 
   for (size_t x = 0; x < SIZE; x++) {
@@ -94,4 +96,40 @@ void DungeonManager::SaveToFile(std::string name, std::string map) {
 
 
 void DungeonManager::LoadDungeon(std::string name) {}
+
+void DungeonManager::SpawnDungeon() {
+
+  Dungeon *dungeon = new Dungeon();
+  SceneManager::SetSceneAsActive(*dungeon);
+
+  for (size_t x = 0; x <= SIZE; x++) {
+    for (size_t y = 0; y <= SIZE; y++) {
+      char tile = loadedMap[y][x][0];
+
+      switch (tile) {
+      case '#':
+        CreateWall(Vector2(x, y));
+        break;
+
+      default:
+        break;
+      }
+    }
+  }
+}
+
+GameObject &DungeonManager::CreateWall(Vector2 pos) {
+
+  std::string name = "Wall" + pos.ToString();
+  GameObject &wall = SceneManager::GetActiveScene()->GetRoot().CreateChild(name);
+  wall.transform.position = pos;
+  // wall.AddComponent<Renderer>("sprites/Wall.png");
+
+  return wall;
+};
+// GameObject &DungeonManager::CreateChest(Vector2 pos) {};
+// GameObject &DungeonManager::CreateEnemy(Vector2 pos) {};
+// GameObject &DungeonManager::CreatePlayer(Vector2 pos) {};
+
+
 } // namespace Dungi

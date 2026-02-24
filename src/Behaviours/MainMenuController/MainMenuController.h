@@ -20,7 +20,7 @@ public:
   // void Update() override;
 
 private:
-  void Play(std::string dugeonName);
+  void Play();
   // #endregion
 };
 } // namespace Dungi

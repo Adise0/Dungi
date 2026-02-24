@@ -1,4 +1,5 @@
 #include "./MainMenuController.h"
+
 #include "../../DungeonManager/DungeonManager.h"
 
 namespace Dungi {
@@ -8,13 +9,13 @@ void MainMenuController::Awake() {
 
   ui->bridge->On("Play", [this](std::string type, std::string message) {
     DungeonManager::CreateNewDungeon(message);
-    Play(message);
+    Play();
   });
 }
 
 
 
-void MainMenuController::Play(std::string dungeonName) {}
+void MainMenuController::Play() { DungeonManager::SpawnDungeon(); }
 
 
 
