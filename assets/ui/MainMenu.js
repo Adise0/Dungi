@@ -1,5 +1,5 @@
 const Quit = () => {
-  Send("Quit");
+  console.log("Quit");
 };
 
 const Back = () => {

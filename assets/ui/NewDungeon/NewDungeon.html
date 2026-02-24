@@ -16,7 +16,13 @@
         <div class="Holder">
           <label for="name">
             <p>Dungeon name</p>
-            <input type="text" name="name" id="name" />
+            <input
+              onfocus="RequestFocus()"
+              onblur="RequestBlur()"
+              type="text"
+              name="name"
+              id="name"
+            />
           </label>
           <button type="submit">Play!</button>
         </div>

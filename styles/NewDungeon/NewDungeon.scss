@@ -5,6 +5,14 @@
   flex-direction: column;
 
   gap: 60px;
+  min-width: fit-content;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 label {
