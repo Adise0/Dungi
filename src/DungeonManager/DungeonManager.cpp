@@ -187,6 +187,8 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
       std::any_of(neighbours.begin(), neighbours.end(), [](bool neighbour) { return neighbour; });
   float ppu = WindowManager::resolutionX / Camera::activeCamera->size;
 
+  const Vector2 tileSize(48, 40);
+
   // if (hasNeighbours) {
   //   if (neighbours[0]) {
   //     origin += Vector2(0, 6);
