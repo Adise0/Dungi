@@ -26,14 +26,18 @@ void DungeonManager::CreateNewDungeon(std::string dungeonName) {
         col.push_back(WALL);
         continue;
       }
-      if (x == SIZE * 0.5 && y == SIZE * 0.5) {
-        col.push_back(WALL);
-        continue;
-      }
-      if (x == SIZE * 0.5 && y == SIZE * 0.5 + 1) {
-        col.push_back(WALL);
-        continue;
-      }
+      // if (x == SIZE * 0.5 && y == SIZE * 0.5) {
+      //   col.push_back(WALL);
+      //   continue;
+      // }
+      // if (x == SIZE * 0.5 + 1 && y == SIZE * 0.5 + 1) {
+      //   col.push_back(WALL);
+      //   continue;
+      // }
+      // if (x == SIZE * 0.5 + 1 && y == SIZE * 0.5) {
+      //   col.push_back(WALL);
+      //   continue;
+      // }
       col.push_back(".");
     }
     dungeonMap.push_back(col);
@@ -41,57 +45,55 @@ void DungeonManager::CreateNewDungeon(std::string dungeonName) {
 
 
 
-  // size_t slots = (SIZE - 2) / PREFAB_SIZE;
+  size_t slots = (SIZE - 2) / PREFAB_SIZE;
 
-  // for (size_t x = 0; x < slots; ++x) {
-  //   for (size_t y = 0; y < slots; ++y) {
+  for (size_t x = 0; x < slots; ++x) {
+    for (size_t y = 0; y < slots; ++y) {
 
-  //     int prefab = rand() % N_OF_PREFABS;
-  //     std::string path = "./assets/dgParts/" + std::to_string(prefab + 1) + ".dg";
+      int prefab = rand() % N_OF_PREFABS;
+      std::string path = "./assets/dgParts/" + std::to_string(prefab + 1) + ".dg";
 
-  //     std::ifstream file(path);
-  //     if (!file) {
-  //       printf("Could not open: %s\n", path.c_str());
-  //       continue;
-  //     }
+      std::ifstream file(path);
+      if (!file) {
+        printf("Could not open: %s\n", path.c_str());
+        continue;
+      }
 
-  //     std::vector<std::vector<char>> grid;
-  //     std::string line;
-  //     while (std::getline(file, line)) {
-  //       grid.emplace_back(line.begin(), line.end());
-  //     }
+      std::vector<std::vector<char>> grid;
+      std::string line;
+      while (std::getline(file, line)) {
+        grid.emplace_back(line.begin(), line.end());
+      }
 
-  //     if (grid.size() < PREFAB_SIZE) continue;
-  //     bool ok = true;
-  //     for (size_t r = 0; r < PREFAB_SIZE; ++r)
-  //       if (grid[r].size() < PREFAB_SIZE) ok = false;
-  //     if (!ok) continue;
+      if (grid.size() < PREFAB_SIZE) continue;
+      bool ok = true;
+      for (size_t r = 0; r < PREFAB_SIZE; ++r)
+        if (grid[r].size() < PREFAB_SIZE) ok = false;
+      if (!ok) continue;
 
-  //     for (size_t px = 0; px < PREFAB_SIZE; ++px) {
-  //       for (size_t py = 0; py < PREFAB_SIZE; ++py) {
-  //         size_t dx = 1 + PREFAB_SIZE * x + px;
-  //         size_t dy = 1 + PREFAB_SIZE * y + py;
+      for (size_t px = 0; px < PREFAB_SIZE; ++px) {
+        for (size_t py = 0; py < PREFAB_SIZE; ++py) {
+          size_t dx = 1 + PREFAB_SIZE * x + px;
+          size_t dy = 1 + PREFAB_SIZE * y + py;
 
-  //         // optional safety guard while debugging
-  //         if (dx >= SIZE - 1 || dy >= SIZE - 1) continue;
+          // optional safety guard while debugging
+          if (dx >= SIZE - 1 || dy >= SIZE - 1) continue;
 
-  //         dungeonMap[dx][dy] = grid[py][px];
-  //       }
-  //     }
-  //   }
-  // }
+          dungeonMap[dx][dy] = grid[py][px];
+        }
+      }
+    }
+  }
   printf("Done\n");
   loadedMap = dungeonMap;
-  std::string map = "";
 
-  for (size_t x = 0; x < SIZE; x++) {
-    for (size_t y = 0; y < SIZE; y++) {
-      map += dungeonMap[y][x];
+  std::string map;
+  for (size_t y = 0; y < SIZE; ++y) {
+    for (size_t x = 0; x < SIZE; ++x) {
+      map += dungeonMap[x][y];
     }
     map += "\n";
   }
-
-
   SaveToFile(dungeonName, map);
   // #endregion
 }
@@ -117,18 +119,22 @@ void DungeonManager::SpawnDungeon() {
   // #region SpawnDungeon
   Dungeon *dungeon = new Dungeon();
   SceneManager::SetSceneAsActive(*dungeon);
+  Camera::activeCamera->SetSize(60);
 
 
-  for (size_t x = 0; x <= SIZE; x++) {
-    for (size_t y = 0; y <= SIZE; y++) {
+
+  for (size_t x = 0; x < SIZE; x++) {
+    for (size_t y = 0; y < SIZE; y++) {
       char tile = loadedMap[x][y][0];
       Vector2 pos(x, y);
-      int variant = 0;
+      float wx = (float)x - (SIZE * 0.5f);
+      float wy = (float)(SIZE - 1 - y) - (SIZE * 0.5f);
+
+
 
       switch (tile) {
       case '#':
-        CreateWall(Vector2(x - (SIZE * 0.5f), y - (SIZE * 0.5f)),
-                   GetConnectedNeighbours(pos, loadedMap));
+        CreateWall(Vector2(wx, wy), GetConnectedNeighbours(pos, loadedMap));
         break;
 
       default:
@@ -165,45 +171,52 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
   wall.transform.position = pos;
 
   SDL_Texture *wallsprite = WindowManager::LoadSprite("sprites/map/walls_floor.png");
-  SDL_Texture *wallsprite2 =
-      WindowManager::LoadSprite("sprites/map/decorative_cracks_coasts_animation.png");
+
+
+  Vector2 centerSize = Vector2(1, 1);
+  Vector2 origin = Vector2(3, 1);
+  Vector2 pixelSize = Vector2(42, 77);
 
   GameObject &center = wall.CreateChild(name + "Center");
-  Renderer &centerRenderer = center.AddComponent<Renderer>(SDL_Color{255, 255, 255, 255});
-  centerRenderer.size = Vector2(0.1, 0.1);
+  center.transform.zIndex = pos.y;
 
-  const int height = 40;
-  const int extendedHeight = 80;
-
-  GameObject &top = wall.CreateChild(name + "-Top");
-  top.transform.position += Vector2::Up * 0.25f;
-  Renderer &topRenderer = top.AddComponent<Renderer>(wallsprite);
-  top.transform.zIndex = 10;
+  Renderer &centerRenderer = center.AddComponent<Renderer>(wallsprite);
 
 
-  SDL_FRect topSRect = {36, 203, 44 - 36, height};
-  if (neighbours[0]) topSRect = {36, 206, 44 - 36, height};
-  topRenderer.SetSRect(topSRect);
-  topRenderer.size = Vector2(0.1f, 0.5f);
+  bool hasNeighbours =
+      std::any_of(neighbours.begin(), neighbours.end(), [](bool neighbour) { return neighbour; });
+  float ppu = WindowManager::resolutionX / Camera::activeCamera->size;
+
+  // if (hasNeighbours) {
+  //   if (neighbours[0]) {
+  //     origin += Vector2(0, 6);
+  //     pixelSize -= Vector2(0, 6);
+  //   }
+  //   if (neighbours[1]) {
+  //     float heightToRemove = 45;
+  //     if (neighbours[0]) heightToRemove += 8;
+
+  //     pixelSize += Vector2(0, -heightToRemove);
+  //   }
+  //   if (neighbours[2]) {
+  //     origin += Vector2(10, 0);
+  //     pixelSize -= Vector2(11, 0);
+  //   }
+
+  //   if (neighbours[3]) {
+  //     pixelSize -= Vector2(15, 0);
+  //   }
+  //   if (!neighbours[1]) {
+  //     centerSize += Vector2(0, 48.0f / ppu);
+  //     center.transform.position -= Vector2(0, (48.0f / ppu) * 0.5f);
+  //   }
+  // }
 
 
 
-  GameObject &down = wall.CreateChild(name + "-Down");
-  Renderer &downRenderer = down.AddComponent<Renderer>(wallsprite);
-
-  printf("Tile: %s, %s\n", pos.ToString().c_str(), std::to_string(neighbours[1]).c_str());
-
-  Vector2 downSize(0.1f, 1.0f);
-  SDL_FRect downSRect = {36, 245, 44 - 36, extendedHeight};
-  if (neighbours[1]) {
-    downSRect = {36, 245, 44 - 36, height};
-    downSize = Vector2(0.1f, 0.5f);
-    down.transform.position += Vector2::Down * 0.25f;
-  } else {
-    down.transform.position += Vector2::Down * 0.5f;
-  }
-  downRenderer.SetSRect(downSRect);
-  downRenderer.size = downSize;
+  centerRenderer.size = centerSize;
+  SDL_FRect srect{origin.x, origin.y, pixelSize.x, pixelSize.y};
+  centerRenderer.SetSRect(srect);
 
   return wall;
 
