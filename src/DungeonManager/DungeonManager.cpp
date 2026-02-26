@@ -148,13 +148,15 @@ void DungeonManager::SpawnDungeon() {
 
 std::vector<bool> DungeonManager::GetConnectedNeighbours(Vector2 pos, DungeonMap map) {
   // #region GetConnectedNeighbours
-  const std::vector<Vector2> neighbours{Vector2::Up, Vector2::Down, Vector2::Left, Vector2::Right};
+  const std::vector<Vector2> neighbours{Vector2(-1, 1), Vector2::Up,    Vector2(1, 1),
+                                        Vector2::Left,  Vector2::Right, Vector2(-1, -1),
+                                        Vector2::Down,  Vector2(1, -1)};
   std::vector<bool> neighbouringWalls;
   for (Vector2 neighbour : neighbours) {
     Vector2 neighbourPos = pos + neighbour;
     if (neighbourPos.x < 0 || neighbourPos.x >= SIZE || neighbourPos.y <= 0 ||
         neighbourPos.y > SIZE) {
-      neighbouringWalls.push_back(false);
+      neighbouringWalls.push_back(true);
       continue;
     }
     neighbouringWalls.push_back((map[neighbourPos.x][neighbourPos.y] == WALL));
