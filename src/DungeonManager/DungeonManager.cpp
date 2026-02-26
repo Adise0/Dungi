@@ -8,7 +8,36 @@
 #include <fstream>
 #include <string>
 
+
 namespace Dungi {
+
+#define NEIGHBOUR_TOP_LEFT 0
+#define NEIGHBOUR_TOP_CENTER 1
+#define NEIGHBOUR_TOP_RIGHT 2
+#define NEIGHBOUR_CENTER_LEFT 3
+#define NEIGHBOUR_CENTER_RIGHT 4
+#define NEIGHBOUR_BOTTOM_LEFT 5
+#define NEIGHBOUR_BOTTOM_CENTER 6
+#define NEIGHBOUR_BOTTOM_RIGHT 7
+
+#define MASK_NONE 0
+#define MASK_TOP 1
+#define MASK_RIGHT 2
+#define MASK_TOP_RIGHT 3
+#define MASK_BOTTOM 4
+#define MASK_TOP_BOTTOM 5
+#define MASK_BOTTOM_RIGHT 6
+#define MASK_TOP_RIGHT_BOTTOM 7
+#define MASK_LEFT 8
+#define MASK_TOP_LEFT 9
+#define MASK_RIGHT_LEFT 10
+#define MASK_TOP_RIGHT_LEFT 11
+#define MASK_BOTTOM_LEFT 12
+#define MASK_TOP_BOTTOM_LEFT 13
+#define MASK_RIGHT_BOTTOM_LEFT 14
+#define MASK_ALL 15
+
+
 
 using namespace Rendering;
 
@@ -119,7 +148,7 @@ void DungeonManager::SpawnDungeon() {
   // #region SpawnDungeon
   Dungeon *dungeon = new Dungeon();
   SceneManager::SetSceneAsActive(*dungeon);
-  Camera::activeCamera->SetSize(60);
+  // Camera::activeCamera->SetSize(60);
 
 
 
@@ -148,9 +177,8 @@ void DungeonManager::SpawnDungeon() {
 
 std::vector<bool> DungeonManager::GetConnectedNeighbours(Vector2 pos, DungeonMap map) {
   // #region GetConnectedNeighbours
-  const std::vector<Vector2> neighbours{Vector2(-1, 1), Vector2::Up,    Vector2(1, 1),
-                                        Vector2::Left,  Vector2::Right, Vector2(-1, -1),
-                                        Vector2::Down,  Vector2(1, -1)};
+  const Vector2 neighbours[8] = {Vector2(-1, -1), Vector2(0, -1), Vector2(1, -1), Vector2(-1, 0),
+                                 Vector2(1, 0),   Vector2(-1, 1), Vector2(0, 1),  Vector2(1, 1)};
   std::vector<bool> neighbouringWalls;
   for (Vector2 neighbour : neighbours) {
     Vector2 neighbourPos = pos + neighbour;
@@ -168,59 +196,163 @@ std::vector<bool> DungeonManager::GetConnectedNeighbours(Vector2 pos, DungeonMap
 
 GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours) {
   // #region CreateWall
+
+
+
   std::string name = "Wall" + pos.ToString();
   GameObject &wall = SceneManager::GetActiveScene()->GetRoot().CreateChild(name);
   wall.transform.position = pos;
 
-  SDL_Texture *wallsprite = WindowManager::LoadSprite("sprites/map/walls_floor.png");
+  SDL_Texture *wallsprite = WindowManager::LoadSprite("sprites/map/walls.png");
 
 
-  Vector2 centerSize = Vector2(1, 1);
-  Vector2 origin = Vector2(3, 1);
-  Vector2 pixelSize = Vector2(42, 77);
+  Vector2 origin;
+  Vector2 pixelSize(46, 40);
 
-  GameObject &center = wall.CreateChild(name + "Center");
-  center.transform.zIndex = pos.y;
+  GameObject &main = wall.CreateChild(name + "Main");
+  main.transform.zIndex = pos.y;
 
-  Renderer &centerRenderer = center.AddComponent<Renderer>(wallsprite);
+  Renderer &mainRenderer = main.AddComponent<Renderer>(wallsprite);
 
 
   bool hasNeighbours =
       std::any_of(neighbours.begin(), neighbours.end(), [](bool neighbour) { return neighbour; });
   float ppu = WindowManager::resolutionX / Camera::activeCamera->size;
 
-  const Vector2 tileSize(48, 40);
 
-  // if (hasNeighbours) {
-  //   if (neighbours[0]) {
-  //     origin += Vector2(0, 6);
-  //     pixelSize -= Vector2(0, 6);
-  //   }
-  //   if (neighbours[1]) {
-  //     float heightToRemove = 45;
-  //     if (neighbours[0]) heightToRemove += 8;
+  // if (pos.x < 3 && pos.x > -3 && pos.y < 3 && pos.y > -3) {
+  //   for (size_t i = 0; i < 8; i++) {
 
-  //     pixelSize += Vector2(0, -heightToRemove);
-  //   }
-  //   if (neighbours[2]) {
-  //     origin += Vector2(10, 0);
-  //     pixelSize -= Vector2(11, 0);
-  //   }
-
-  //   if (neighbours[3]) {
-  //     pixelSize -= Vector2(15, 0);
-  //   }
-  //   if (!neighbours[1]) {
-  //     centerSize += Vector2(0, 48.0f / ppu);
-  //     center.transform.position -= Vector2(0, (48.0f / ppu) * 0.5f);
+  //     printf("Pos: %s, neigh: %s, hasNeigh: %s\n", pos.ToString().c_str(),
+  //            std::to_string(i).c_str(), neighbours[i] ? "yes" : "no");
   //   }
   // }
 
+  bool hasBottom = false;
+  if (!hasNeighbours || !neighbours[NEIGHBOUR_BOTTOM_CENTER]) hasBottom = true;
+
+  if (!hasNeighbours) {
+    origin = Vector2(0, 164);
+  } else {
+
+    uint neighbourMask = 0;
+    neighbourMask |= neighbours[NEIGHBOUR_TOP_CENTER] ? 1 << 0 : 0;
+    neighbourMask |= neighbours[NEIGHBOUR_CENTER_RIGHT] ? 1 << 1 : 0;
+    neighbourMask |= neighbours[NEIGHBOUR_BOTTOM_CENTER] ? 1 << 2 : 0;
+    neighbourMask |= neighbours[NEIGHBOUR_CENTER_LEFT] ? 1 << 3 : 0;
+
+    if (pos.x < 3 && pos.x > -3 && pos.y < 3 && pos.y > -3)
+      printf("Pos: %s, Mask: %s\n", pos.ToString().c_str(), std::to_string(neighbourMask).c_str());
+
+    switch (neighbourMask) {
+    case MASK_TOP:
+      origin = Vector2(94, 0);
+      break;
+    case MASK_RIGHT:
+      origin = Vector2(94, 82);
+      break;
+    case MASK_BOTTOM:
+      origin = Vector2(94, 124);
+      break;
+    case MASK_LEFT:
+      origin = Vector2(94, 41);
+      break;
+    case MASK_TOP_RIGHT:
+      origin = Vector2(47, 0);
+      break;
+    case MASK_TOP_LEFT:
+      origin = Vector2(47, 41);
+      break;
+    case MASK_BOTTOM_RIGHT:
+      origin = Vector2(47, 82);
+      break;
+    case MASK_BOTTOM_LEFT:
+      origin = Vector2(47, 124);
+      break;
+    case MASK_TOP_RIGHT_BOTTOM:
+      origin = Vector2(141, 0);
+      break;
+    case MASK_TOP_BOTTOM_LEFT:
+      origin = Vector2(141, 41);
+      break;
+    case MASK_TOP_RIGHT_LEFT:
+      origin = Vector2(141, 124);
+      break;
+    case MASK_RIGHT_BOTTOM_LEFT:
+      origin = Vector2(141, 82);
+      break;
+    case MASK_TOP_BOTTOM:
+      origin = Vector2(94, 164);
+      break;
+    case MASK_RIGHT_LEFT:
+      origin = Vector2(141, 164);
+      break;
+    case MASK_ALL:
+      origin = Vector2(47, 164);
+      break;
+
+    case MASK_NONE:
+      origin = Vector2(0, 164);
+      break;
+    }
 
 
-  centerRenderer.size = centerSize;
+
+    // if (neighbourMask == MASK_ALL) {
+
+    //   if (neighbours[NEIGHBOUR_TOP_LEFT]) {
+    //     GameObject &topLeft = wall.CreateChild(name + "topLeft");
+    //     Renderer &topLeftRenderer = topLeft.AddComponent<Renderer>(wallsprite);
+    //     SDL_FRect topLeftSRect{183, 41, pixelSize.x, pixelSize.y};
+    //     topLeftRenderer.SetSRect(topLeftSRect);
+    //   }
+    //   if (neighbours[NEIGHBOUR_TOP_RIGHT]) {
+    //     GameObject &topRight = wall.CreateChild(name + "topRight");
+    //     Renderer &topRightRenderer = topRight.AddComponent<Renderer>(wallsprite);
+    //     SDL_FRect topRightSRect{183, 0, pixelSize.x, pixelSize.y};
+    //     topRightRenderer.SetSRect(topRightSRect);
+    //   }
+    //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT]) {
+    //     GameObject &bottomLeft = wall.CreateChild(name + "bottomLeft");
+    //     Renderer &bottomLeftRenderer = bottomLeft.AddComponent<Renderer>(wallsprite);
+    //     SDL_FRect bottomLeftSRect{183, 123, pixelSize.x, pixelSize.y};
+    //     bottomLeftRenderer.SetSRect(bottomLeftSRect);
+    //   }
+    //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT]) {
+    //     GameObject &bottomRight = wall.CreateChild(name + "bottomRight");
+    //     Renderer &bottomRightRenderer = bottomRight.AddComponent<Renderer>(wallsprite);
+    //     SDL_FRect bottomRightSRect{183, 82, pixelSize.x, pixelSize.y};
+    //     bottomRightRenderer.SetSRect(bottomRightSRect);
+    //   }
+    // }
+  }
+
   SDL_FRect srect{origin.x, origin.y, pixelSize.x, pixelSize.y};
-  centerRenderer.SetSRect(srect);
+  mainRenderer.SetSRect(srect);
+
+
+
+  // if (hasBottom) {
+  //   GameObject &bottom = wall.CreateChild(name + "Bottom");
+  //   Renderer &bottomRenderer = bottom.AddComponent<Renderer>(wallsprite);
+  //   bottom.transform.position += Vector2(0, -(pixelSize.y / ppu) * 2);
+
+  //   Vector2 bottomOrigin(0, 0);
+  //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && !neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+  //     bottomOrigin = Vector2(0, 41);
+  //   }
+  //   if (!neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+  //     bottomOrigin = Vector2(0, 82);
+  //   }
+  //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+  //     bottomOrigin = Vector2(0, 123);
+  //   }
+
+  //   SDL_FRect bttomSRect{bottomOrigin.x, bottomOrigin.y, pixelSize.x, pixelSize.y};
+  //   bottomRenderer.SetSRect(bttomSRect);
+  // }
+
+
 
   return wall;
 
