@@ -148,7 +148,7 @@ void DungeonManager::SpawnDungeon() {
   // #region SpawnDungeon
   Dungeon *dungeon = new Dungeon();
   SceneManager::SetSceneAsActive(*dungeon);
-  // Camera::activeCamera->SetSize(60);
+  Camera::activeCamera->SetSize(50);
 
 
 
@@ -246,46 +246,46 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
 
     switch (neighbourMask) {
     case MASK_TOP:
-      origin = Vector2(94, 0);
-      break;
-    case MASK_RIGHT:
-      origin = Vector2(94, 82);
-      break;
-    case MASK_BOTTOM:
-      origin = Vector2(94, 124);
-      break;
-    case MASK_LEFT:
-      origin = Vector2(94, 41);
-      break;
-    case MASK_TOP_RIGHT:
-      origin = Vector2(47, 0);
-      break;
-    case MASK_TOP_LEFT:
-      origin = Vector2(47, 41);
-      break;
-    case MASK_BOTTOM_RIGHT:
-      origin = Vector2(47, 82);
-      break;
-    case MASK_BOTTOM_LEFT:
-      origin = Vector2(47, 124);
-      break;
-    case MASK_TOP_RIGHT_BOTTOM:
-      origin = Vector2(141, 0);
-      break;
-    case MASK_TOP_BOTTOM_LEFT:
-      origin = Vector2(141, 41);
-      break;
-    case MASK_TOP_RIGHT_LEFT:
-      origin = Vector2(141, 124);
-      break;
-    case MASK_RIGHT_BOTTOM_LEFT:
       origin = Vector2(141, 82);
       break;
+    case MASK_RIGHT:
+      origin = Vector2(141, 41);
+      break;
+    case MASK_BOTTOM:
+      origin = Vector2(141, 123);
+      break;
+    case MASK_LEFT:
+      origin = Vector2(141, 0);
+      break;
+    case MASK_TOP_RIGHT:
+      origin = Vector2(47, 123);
+      break;
+    case MASK_TOP_LEFT:
+      origin = Vector2(47, 82);
+      break;
+    case MASK_BOTTOM_RIGHT:
+      origin = Vector2(47, 41);
+      break;
+    case MASK_BOTTOM_LEFT:
+      origin = Vector2(47, 0);
+      break;
+    case MASK_TOP_RIGHT_BOTTOM:
+      origin = Vector2(94, 41);
+      break;
+    case MASK_TOP_BOTTOM_LEFT:
+      origin = Vector2(94, 82);
+      break;
+    case MASK_TOP_RIGHT_LEFT:
+      origin = Vector2(94, 123);
+      break;
+    case MASK_RIGHT_BOTTOM_LEFT:
+      origin = Vector2(94, 0);
+      break;
     case MASK_TOP_BOTTOM:
-      origin = Vector2(94, 164);
+      origin = Vector2(141, 164);
       break;
     case MASK_RIGHT_LEFT:
-      origin = Vector2(141, 164);
+      origin = Vector2(94, 164);
       break;
     case MASK_ALL:
       origin = Vector2(47, 164);
@@ -332,25 +332,26 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
 
 
 
-  // if (hasBottom) {
-  //   GameObject &bottom = wall.CreateChild(name + "Bottom");
-  //   Renderer &bottomRenderer = bottom.AddComponent<Renderer>(wallsprite);
-  //   bottom.transform.position += Vector2(0, -(pixelSize.y / ppu) * 2);
+  if (hasBottom) {
+    GameObject &bottom = wall.CreateChild(name + "Bottom");
+    Renderer &bottomRenderer = bottom.AddComponent<Renderer>(wallsprite);
+    bottom.transform.position += Vector2(0, -(pixelSize.y / ppu) * 0.5f);
+    bottom.transform.zIndex = bottom.transform.parent->zIndex - 0.5f;
 
-  //   Vector2 bottomOrigin(0, 0);
-  //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && !neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
-  //     bottomOrigin = Vector2(0, 41);
-  //   }
-  //   if (!neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
-  //     bottomOrigin = Vector2(0, 82);
-  //   }
-  //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
-  //     bottomOrigin = Vector2(0, 123);
-  //   }
+    Vector2 bottomOrigin(0, 0);
+    if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && !neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+      bottomOrigin = Vector2(0, 41);
+    }
+    if (!neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+      bottomOrigin = Vector2(0, 82);
+    }
+    if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+      bottomOrigin = Vector2(0, 123);
+    }
 
-  //   SDL_FRect bttomSRect{bottomOrigin.x, bottomOrigin.y, pixelSize.x, pixelSize.y};
-  //   bottomRenderer.SetSRect(bttomSRect);
-  // }
+    SDL_FRect bttomSRect{bottomOrigin.x, bottomOrigin.y, pixelSize.x, pixelSize.y};
+    bottomRenderer.SetSRect(bttomSRect);
+  }
 
 
 
