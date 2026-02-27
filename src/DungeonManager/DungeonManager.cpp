@@ -182,8 +182,8 @@ std::vector<bool> DungeonManager::GetConnectedNeighbours(Vector2 pos, DungeonMap
   std::vector<bool> neighbouringWalls;
   for (Vector2 neighbour : neighbours) {
     Vector2 neighbourPos = pos + neighbour;
-    if (neighbourPos.x < 0 || neighbourPos.x >= SIZE || neighbourPos.y <= 0 ||
-        neighbourPos.y > SIZE) {
+    if (neighbourPos.x <= 0 || neighbourPos.x >= SIZE || neighbourPos.y <= 0 ||
+        neighbourPos.y >= SIZE) {
       neighbouringWalls.push_back(true);
       continue;
     }
@@ -217,7 +217,7 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
 
   bool hasNeighbours =
       std::any_of(neighbours.begin(), neighbours.end(), [](bool neighbour) { return neighbour; });
-  float ppu = WindowManager::resolutionX / Camera::activeCamera->size;
+  Vector2 ppu = pixelSize;
 
 
   // if (pos.x < 3 && pos.x > -3 && pos.y < 3 && pos.y > -3) {
@@ -246,49 +246,49 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
 
     switch (neighbourMask) {
     case MASK_TOP:
-      origin = Vector2(141, 82);
+      origin = Vector2(143, 82);
       break;
     case MASK_RIGHT:
-      origin = Vector2(141, 41);
+      origin = Vector2(143, 41);
       break;
     case MASK_BOTTOM:
-      origin = Vector2(141, 123);
+      origin = Vector2(143, 123);
       break;
     case MASK_LEFT:
-      origin = Vector2(141, 0);
+      origin = Vector2(143, 0);
       break;
     case MASK_TOP_RIGHT:
-      origin = Vector2(47, 123);
+      origin = Vector2(49, 123);
       break;
     case MASK_TOP_LEFT:
-      origin = Vector2(47, 82);
+      origin = Vector2(49, 82);
       break;
     case MASK_BOTTOM_RIGHT:
-      origin = Vector2(47, 41);
+      origin = Vector2(49, 41);
       break;
     case MASK_BOTTOM_LEFT:
-      origin = Vector2(47, 0);
+      origin = Vector2(49, 0);
       break;
     case MASK_TOP_RIGHT_BOTTOM:
-      origin = Vector2(94, 41);
+      origin = Vector2(96, 41);
       break;
     case MASK_TOP_BOTTOM_LEFT:
-      origin = Vector2(94, 82);
+      origin = Vector2(96, 82);
       break;
     case MASK_TOP_RIGHT_LEFT:
-      origin = Vector2(94, 123);
+      origin = Vector2(96, 123);
       break;
     case MASK_RIGHT_BOTTOM_LEFT:
-      origin = Vector2(94, 0);
+      origin = Vector2(96, 0);
       break;
     case MASK_TOP_BOTTOM:
-      origin = Vector2(141, 164);
+      origin = Vector2(143, 164);
       break;
     case MASK_RIGHT_LEFT:
-      origin = Vector2(94, 164);
+      origin = Vector2(96, 164);
       break;
     case MASK_ALL:
-      origin = Vector2(47, 164);
+      origin = Vector2(49, 164);
       break;
 
     case MASK_NONE:
@@ -298,34 +298,33 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
 
 
 
-    // if (neighbourMask == MASK_ALL) {
-
-    //   if (neighbours[NEIGHBOUR_TOP_LEFT]) {
-    //     GameObject &topLeft = wall.CreateChild(name + "topLeft");
-    //     Renderer &topLeftRenderer = topLeft.AddComponent<Renderer>(wallsprite);
-    //     SDL_FRect topLeftSRect{183, 41, pixelSize.x, pixelSize.y};
-    //     topLeftRenderer.SetSRect(topLeftSRect);
-    //   }
-    //   if (neighbours[NEIGHBOUR_TOP_RIGHT]) {
-    //     GameObject &topRight = wall.CreateChild(name + "topRight");
-    //     Renderer &topRightRenderer = topRight.AddComponent<Renderer>(wallsprite);
-    //     SDL_FRect topRightSRect{183, 0, pixelSize.x, pixelSize.y};
-    //     topRightRenderer.SetSRect(topRightSRect);
-    //   }
-    //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT]) {
-    //     GameObject &bottomLeft = wall.CreateChild(name + "bottomLeft");
-    //     Renderer &bottomLeftRenderer = bottomLeft.AddComponent<Renderer>(wallsprite);
-    //     SDL_FRect bottomLeftSRect{183, 123, pixelSize.x, pixelSize.y};
-    //     bottomLeftRenderer.SetSRect(bottomLeftSRect);
-    //   }
-    //   if (neighbours[NEIGHBOUR_BOTTOM_LEFT]) {
-    //     GameObject &bottomRight = wall.CreateChild(name + "bottomRight");
-    //     Renderer &bottomRightRenderer = bottomRight.AddComponent<Renderer>(wallsprite);
-    //     SDL_FRect bottomRightSRect{183, 82, pixelSize.x, pixelSize.y};
-    //     bottomRightRenderer.SetSRect(bottomRightSRect);
-    //   }
+    //     if (!neighbours[NEIGHBOUR_TOP_LEFT]) {
+    //       GameObject &topLeft = wall.CreateChild(name + "topLeft");
+    //       Renderer &topLeftRenderer = topLeft.AddComponent<Renderer>(wallsprite);
+    //       SDL_FRect topLeftSRect{183, 41, pixelSize.x, pixelSize.y};
+    //       topLeftRenderer.SetSRect(topLeftSRect);
+    //     }
+    // if (!neighbours[NEIGHBOUR_TOP_RIGHT] && neighbours[NEIGHBOUR_TOP_CENTER] &&
+    //     neighbours[NEIGHBOUR_CENTER_RIGHT]) {
+    //   GameObject &topRight = wall.CreateChild(name + "topRight");
+    //   Renderer &topRightRenderer = topRight.AddComponent<Renderer>(wallsprite);
+    //   SDL_FRect topRightSRect{190, 0, pixelSize.x, pixelSize.y};
+    //   topRightRenderer.SetSRect(topRightSRect);
     // }
+    //     if (!neighbours[NEIGHBOUR_BOTTOM_LEFT]) {
+    //       GameObject &bottomLeft = wall.CreateChild(name + "bottomLeft");
+    //       Renderer &bottomLeftRenderer = bottomLeft.AddComponent<Renderer>(wallsprite);
+    //       SDL_FRect bottomLeftSRect{183, 123, pixelSize.x, pixelSize.y};
+    //       bottomLeftRenderer.SetSRect(bottomLeftSRect);
+    //     }
+    //     if (!neighbours[NEIGHBOUR_BOTTOM_LEFT]) {
+    //       GameObject &bottomRight = wall.CreateChild(name + "bottomRight");
+    //       Renderer &bottomRightRenderer = bottomRight.AddComponent<Renderer>(wallsprite);
+    //       SDL_FRect bottomRightSRect{183, 82, pixelSize.x, pixelSize.y};
+    //       bottomRightRenderer.SetSRect(bottomRightSRect);
+    //     }
   }
+
 
   SDL_FRect srect{origin.x, origin.y, pixelSize.x, pixelSize.y};
   mainRenderer.SetSRect(srect);
@@ -335,21 +334,33 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
   if (hasBottom) {
     GameObject &bottom = wall.CreateChild(name + "Bottom");
     Renderer &bottomRenderer = bottom.AddComponent<Renderer>(wallsprite);
-    bottom.transform.position += Vector2(0, -(pixelSize.y / ppu) * 0.5f);
-    bottom.transform.zIndex = bottom.transform.parent->zIndex - 0.5f;
+    float bottomYSize = 30.f / ppu.y;
+    bottomRenderer.size = Vector2(1, bottomYSize);
+    bottom.transform.position += Vector2(0, -(0.5f + bottomYSize * 0.5f));
+    bottom.transform.zIndex = bottom.transform.parent->zIndex + 1;
 
     Vector2 bottomOrigin(0, 0);
-    if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && !neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+    Vector2 bototmPixelSize = pixelSize;
+
+
+    if (neighbours[NEIGHBOUR_CENTER_LEFT] && !neighbours[NEIGHBOUR_CENTER_RIGHT]) {
       bottomOrigin = Vector2(0, 41);
+      bototmPixelSize += Vector2(2, 0);
+      bottomRenderer.size += Vector2(2, 0) / ppu;
+      bottom.transform.position -= Vector2(1, 0) / ppu;
     }
-    if (!neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+    if (!neighbours[NEIGHBOUR_CENTER_LEFT] && neighbours[NEIGHBOUR_CENTER_RIGHT]) {
       bottomOrigin = Vector2(0, 82);
+      bototmPixelSize += Vector2(2, 0);
+      bottomRenderer.size += Vector2(2, 0) / ppu;
+      bottom.transform.position += Vector2(1, 0) / ppu;
     }
-    if (neighbours[NEIGHBOUR_BOTTOM_LEFT] && neighbours[NEIGHBOUR_BOTTOM_RIGHT]) {
+    if (neighbours[NEIGHBOUR_CENTER_LEFT] && neighbours[NEIGHBOUR_CENTER_RIGHT]) {
       bottomOrigin = Vector2(0, 123);
+      bototmPixelSize += Vector2(2, 0);
     }
 
-    SDL_FRect bttomSRect{bottomOrigin.x, bottomOrigin.y, pixelSize.x, pixelSize.y};
+    SDL_FRect bttomSRect{bottomOrigin.x, bottomOrigin.y, bototmPixelSize.x, bototmPixelSize.y};
     bottomRenderer.SetSRect(bttomSRect);
   }
 
