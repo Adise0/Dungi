@@ -102,12 +102,17 @@ void DungeonManager::CreateNewDungeon(std::string dungeonName) {
     }
   }
   std::srand(time(NULL));
-  Vector2 playerPos(1 + std::rand() % SIZE - 2, 1 + std::rand() % SIZE - 2);
-  while (dungeonMap[playerPos.x][playerPos.y] != ".") {
-    playerPos = Vector2(1 + std::rand() % SIZE - 2, 1 + std::rand() % SIZE - 2);
+  int x = 1 + std::rand() % (SIZE - 2);
+  int y = 2 + std::rand() % (SIZE - 3);
+
+  while (dungeonMap[x][y] != "." || dungeonMap[x][y - 1] != "." || dungeonMap[x][y + 1] != ".") {
+    x = 1 + std::rand() % (SIZE - 2);
+    y = 2 + std::rand() % (SIZE - 3);
   }
 
-  dungeonMap[playerPos.x][playerPos.y] = "P";
+  Vector2 playerPos(x, y);
+
+  dungeonMap[playerPos.x][playerPos.y] = PLAYER;
 
 
   printf("Done\n");
@@ -153,14 +158,10 @@ void DungeonManager::SpawnDungeon() {
     for (size_t y = 0; y < SIZE; y++) {
       char tile = loadedMap[x][y][0];
       Vector2 pos(x, y);
-      float wx = (float)x - (SIZE * 0.5f);
-      float wy = (float)(SIZE - 1 - y) - (SIZE * 0.5f);
-
-
 
       switch (tile) {
-      case '#':
-        CreateWall(Vector2(wx, wy), GetConnectedNeighbours(pos, loadedMap));
+      case WALL[0]:
+        CreateWall(ToWorldPos(x, y), GetConnectedNeighbours(pos, loadedMap));
         break;
 
       default:
@@ -168,6 +169,39 @@ void DungeonManager::SpawnDungeon() {
       }
     }
   }
+
+  SpawnPlayer();
+  // #endregion
+}
+
+
+Vector2 DungeonManager::ToWorldPos(int mapX, int mapY) {
+  // #region ToWorldPos
+  int worldX = mapX - (SIZE * 0.5f);
+  int worldY = (SIZE - 1 - mapY) - (SIZE * 0.5f);
+  return Vector2(worldX, worldY);
+  // #endregion
+}
+
+void DungeonManager::SpawnPlayer() {
+  // #region SpawnPlayer
+  Vector2 foundSpawnPos;
+  for (size_t x = 0; x < SIZE; x++) {
+    for (size_t y = 0; y < SIZE; y++) {
+      if (loadedMap[x][y] != PLAYER) continue;
+      foundSpawnPos = ToWorldPos(x, y);
+    }
+  }
+  if (foundSpawnPos == Vector2::Zero) {
+    printf("Player position not found!\n");
+    return;
+  }
+
+  GameObject &playerObject = SceneManager::GetActiveScene()->GetRoot().CreateChild("Player");
+  playerObject.transform.SetPosition(foundSpawnPos);
+  Renderer &playerRenderer = playerObject.AddComponent<Renderer>(SDL_Color{255, 255, 255, 255});
+  playerRenderer.size = Vector2(0.5, 0.5);
+
   // #endregion
 }
 
@@ -193,9 +227,6 @@ std::vector<bool> DungeonManager::GetConnectedNeighbours(Vector2 pos, DungeonMap
 
 GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours) {
   // #region CreateWall
-
-
-
   std::string name = "Wall" + pos.ToString();
   GameObject &wall = SceneManager::GetActiveScene()->GetRoot().CreateChild(name);
   wall.transform.position = pos;
@@ -353,6 +384,7 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
 
 
   return wall;
+  // #endregion
 
   // GameObject &DungeonManager::CreateChest(Vector2 pos) {};
   // GameObject &DungeonManager::CreateEnemy(Vector2 pos) {};

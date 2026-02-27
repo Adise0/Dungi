@@ -35,6 +35,8 @@ public:
   static void SpawnDungeon();
 
 private:
+  static Vector2 ToWorldPos(int mapX, int mapY);
+  static void SpawnPlayer();
   static void SaveToFile(std::string name, std::string map);
   static std::vector<bool> GetConnectedNeighbours(Vector2 pos, DungeonMap map);
   static GameObject &CreateWall(Vector2 pos, std::vector<bool> neighbours);
