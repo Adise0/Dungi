@@ -55,18 +55,6 @@ void DungeonManager::CreateNewDungeon(std::string dungeonName) {
         col.push_back(WALL);
         continue;
       }
-      // if (x == SIZE * 0.5 && y == SIZE * 0.5) {
-      //   col.push_back(WALL);
-      //   continue;
-      // }
-      // if (x == SIZE * 0.5 + 1 && y == SIZE * 0.5 + 1) {
-      //   col.push_back(WALL);
-      //   continue;
-      // }
-      // if (x == SIZE * 0.5 + 1 && y == SIZE * 0.5) {
-      //   col.push_back(WALL);
-      //   continue;
-      // }
       col.push_back(".");
     }
     dungeonMap.push_back(col);
@@ -113,6 +101,15 @@ void DungeonManager::CreateNewDungeon(std::string dungeonName) {
       }
     }
   }
+  std::srand(time(NULL));
+  Vector2 playerPos(1 + std::rand() % SIZE - 2, 1 + std::rand() % SIZE - 2);
+  while (dungeonMap[playerPos.x][playerPos.y] != ".") {
+    playerPos = Vector2(1 + std::rand() % SIZE - 2, 1 + std::rand() % SIZE - 2);
+  }
+
+  dungeonMap[playerPos.x][playerPos.y] = "P";
+
+
   printf("Done\n");
   loadedMap = dungeonMap;
 
@@ -219,15 +216,6 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
       std::any_of(neighbours.begin(), neighbours.end(), [](bool neighbour) { return neighbour; });
   Vector2 ppu = pixelSize;
 
-
-  // if (pos.x < 3 && pos.x > -3 && pos.y < 3 && pos.y > -3) {
-  //   for (size_t i = 0; i < 8; i++) {
-
-  //     printf("Pos: %s, neigh: %s, hasNeigh: %s\n", pos.ToString().c_str(),
-  //            std::to_string(i).c_str(), neighbours[i] ? "yes" : "no");
-  //   }
-  // }
-
   bool hasBottom = false;
   if (!hasNeighbours || !neighbours[NEIGHBOUR_BOTTOM_CENTER]) hasBottom = true;
 
@@ -241,8 +229,6 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
     neighbourMask |= neighbours[NEIGHBOUR_BOTTOM_CENTER] ? 1 << 2 : 0;
     neighbourMask |= neighbours[NEIGHBOUR_CENTER_LEFT] ? 1 << 3 : 0;
 
-    if (pos.x < 3 && pos.x > -3 && pos.y < 3 && pos.y > -3)
-      printf("Pos: %s, Mask: %s\n", pos.ToString().c_str(), std::to_string(neighbourMask).c_str());
 
     switch (neighbourMask) {
     case MASK_TOP:
