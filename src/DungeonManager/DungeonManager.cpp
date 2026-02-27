@@ -150,7 +150,7 @@ void DungeonManager::SpawnDungeon() {
   // #region SpawnDungeon
   Dungeon *dungeon = new Dungeon();
   SceneManager::SetSceneAsActive(*dungeon);
-  Camera::activeCamera->SetSize(50);
+  // Camera::activeCamera->SetSize(50);
 
 
 
@@ -199,6 +199,9 @@ void DungeonManager::SpawnPlayer() {
 
   GameObject &playerObject = SceneManager::GetActiveScene()->GetRoot().CreateChild("Player");
   playerObject.transform.SetPosition(foundSpawnPos);
+  Camera::activeCamera->gameObject.transform.SetParent(&playerObject.transform);
+  Camera::activeCamera->gameObject.transform.SetLocalPosition(Vector2::Zero);
+
   Renderer &playerRenderer = playerObject.AddComponent<Renderer>(SDL_Color{255, 255, 255, 255});
   playerRenderer.size = Vector2(0.5, 0.5);
 
