@@ -1,4 +1,5 @@
 #include "./DungeonManager.h"
+#include "../Behaviours/PlayerController/PlayerController.h"
 #include "../Scenes/Dungeon/Dungeon.h"
 #include <GameObject.h>
 #include <SDL3/SDL_oldnames.h>
@@ -7,7 +8,6 @@
 #include <cstdio>
 #include <fstream>
 #include <string>
-
 
 namespace Dungi {
 
@@ -205,6 +205,10 @@ void DungeonManager::SpawnPlayer() {
   Renderer &playerRenderer = playerObject.AddComponent<Renderer>(SDL_Color{255, 255, 255, 255});
   playerRenderer.size = Vector2(0.5, 0.5);
 
+  playerObject.AddComponent<PlayerController>();
+  playerObject.AddComponent<BoxCollider>(Vector2(0.5, 0.5));
+  playerObject.AddComponent<RigidBody>();
+
   // #endregion
 }
 
@@ -232,6 +236,10 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
   // #region CreateWall
   std::string name = "Wall" + pos.ToString();
   GameObject &wall = SceneManager::GetActiveScene()->GetRoot().CreateChild(name);
+  GameObject &colHolder = wall.CreateChild(name + "Collider");
+  colHolder.transform.position += Vector2(0, -0.3f);
+  colHolder.AddComponent<BoxCollider>(Vector2(1, 1));
+
   wall.transform.position = pos;
 
   SDL_Texture *wallsprite = WindowManager::LoadSprite("sprites/map/walls.png");
@@ -241,7 +249,7 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
   Vector2 pixelSize(46, 40);
 
   GameObject &main = wall.CreateChild(name + "Main");
-  main.transform.zIndex = pos.y;
+  main.transform.zIndex = -pos.y;
 
   Renderer &mainRenderer = main.AddComponent<Renderer>(wallsprite);
 
@@ -357,7 +365,7 @@ GameObject &DungeonManager::CreateWall(Vector2 pos, std::vector<bool> neighbours
     float bottomYSize = 30.f / ppu.y;
     bottomRenderer.size = Vector2(1, bottomYSize);
     bottom.transform.position += Vector2(0, -(0.5f + bottomYSize * 0.5f));
-    bottom.transform.zIndex = bottom.transform.parent->zIndex + 1;
+    bottom.transform.zIndex = bottom.transform.parent->zIndex + 0.5f;
 
     Vector2 bottomOrigin(0, 0);
     Vector2 bototmPixelSize = pixelSize;
