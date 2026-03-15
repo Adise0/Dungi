@@ -1,0 +1,10 @@
+# EDITOR
+.vscode
+
+# BUILD
+default
+build
+out
+
+# CONFIG
+CMakeUserPresets.json
